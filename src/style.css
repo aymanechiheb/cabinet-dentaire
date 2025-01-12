@@ -1,0 +1,163 @@
+/* Header Styles */
+#header {
+  background: #fff;
+  transition: all 0.5s;
+  z-index: 997;
+  height: 86px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1); /* Softer shadow */
+  display: flex;
+  align-items: center;
+  position: fixed; /* Fix the header at the top */
+  top: 0; /* Stick to the very top */
+  left: 0; /* Align it to the left */
+  width: 100%; /* Make it span the full width of the page */
+}
+
+/* Adjust the body padding to account for the header height */
+body {
+  padding-top: 86px; /* 86px (header height) */
+}
+
+/* Container for logo and navbar */
+.container {
+  display: flex;
+  align-items: center; /* Vertically center the logo and navbar */
+  justify-content: space-between; /* Logo on the left, navbar on the right */
+  width: 100%; /* Ensure the container spans the full width */
+  max-width: 1200px; /* Adjust this value based on your design */
+  margin: 0 auto; /* Center the container horizontally */
+  padding: 0 20px; /* Add some padding to the sides */
+}
+
+/* Logo styles */
+#header .logo {
+  font-size: 30px;
+  margin: 0; /* Ensure no margin is pushing the logo */
+  padding: 0;
+  line-height: 1;
+  font-weight: 700; /* Bolder font weight */
+  letter-spacing: 1px; /* Slightly more spacing */
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  align-items: center; /* Vertically center the logo content */
+}
+
+#header .logo a {
+  color: #222222;
+  text-decoration: none; /* Remove underline */
+}
+
+#header .logo a span {
+  color: #10ea84;
+}
+
+#header .logo img {
+  max-height: 60px; /* Adjust the logo height */
+  transition: transform 0.3s ease; /* Add a hover effect */
+}
+
+#header .logo img:hover {
+  transform: scale(1.05); /* Slightly enlarge the logo on hover */
+}
+
+/* Navbar styles */
+.navbar {
+  padding: 0;
+  display: flex;
+  justify-content: flex-end; /* Align navbar items to the right */
+  width: auto; /* Let the navbar take only the space it needs */
+}
+
+.navbar ul {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  list-style: none;
+  align-items: center; /* Vertically center the list items */
+}
+
+.navbar li {
+  position: relative;
+}
+
+.navbar > ul > li {
+  white-space: nowrap;
+  padding: 10px 15px; /* Adjust padding for better spacing */
+}
+
+.navbar a,
+.navbar a:focus {
+  display: flex;
+  align-items: center; /* Vertically center the link content */
+  justify-content: space-between;
+  padding: 10px 15px; /* More padding for better click area */
+  font-size: 16px; /* Slightly larger font size */
+  font-weight: 600;
+  color: #222222;
+  white-space: nowrap;
+  transition: all 0.3s ease; /* Smooth transition for all properties */
+  text-decoration: none; /* Remove underline */
+}
+
+.navbar a i,
+.navbar a:focus i {
+  font-size: 14px; /* Slightly larger icon size */
+  line-height: 0;
+  margin-left: 8px; /* More spacing between icon and text */
+  transition: transform 0.3s ease; /* Add hover effect to icons */
+}
+
+.navbar a:hover i {
+  transform: translateX(5px); /* Move icon slightly on hover */
+}
+
+.navbar > ul > li > a:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: -6px;
+  left: 0;
+  background-color: #10ea96;
+  visibility: hidden;
+  width: 0px;
+  transition: all 0.3s ease-in-out 0s;
+}
+
+.navbar a:hover:before,
+.navbar li:hover > a:before,
+.navbar .active:before {
+  visibility: visible;
+  width: 100%;
+}
+
+/* Remove background color on hover */
+.navbar a:hover,
+.navbar .active,
+.navbar .active:focus,
+.navbar li:hover > a {
+  color: #222222; /* Keep the text color unchanged */
+  background-color: transparent; /* Remove background color */
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+  #header {
+    height: 70px; /* Smaller header for mobile */
+  }
+
+  body {
+    padding-top: 70px; /* Adjust body padding for mobile */
+  }
+
+  .navbar ul {
+    display: flex; /* Always show the navbar on mobile */
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+}

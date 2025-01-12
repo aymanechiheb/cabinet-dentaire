@@ -1,27 +1,26 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import  { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { TextField, Button, Typography, Paper, CircularProgress } from "@mui/material";
 import { styled } from "@mui/system";
 import { ToastContainer, toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../Stores/userSlice";
 import background from "../assets/background-img.jpg";
+import { TextField, Button, Typography, Paper, CircularProgress } from "@mui/material";
 
 const Container = styled('div')({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  width: "100vw", // Full width of the viewport
-  height: "100vh", // Full height of the viewport
-  backgroundImage: `url(${background})`, // Use the imported background image
-  backgroundSize: "cover", // Ensure the background image covers the entire viewport
-  backgroundPosition: "center", // Center the background image
-  backgroundRepeat: "no-repeat", // Avoid tiling the background image
-  overflow: "hidden", // Prevent unwanted scrollbars
+  width: "100vw",
+  height: "100vh",
+  backgroundImage: `url(${background})`,
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  backgroundRepeat: "no-repeat",
+  overflow: "hidden",
 });
 
-// Styled paper component with glassmorphism effect
 const PaperStyled = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
   borderRadius: 16,
@@ -32,7 +31,6 @@ const PaperStyled = styled(Paper)(({ theme }) => ({
   textAlign: "center",
 }));
 
-// Title with gradient text
 const Title = styled(Typography)(({ theme }) => ({
   textAlign: "center",
   fontWeight: "700",
@@ -43,7 +41,6 @@ const Title = styled(Typography)(({ theme }) => ({
   fontSize: "2.5rem",
 }));
 
-// Input field with modern styling
 const InputField = styled(TextField)(({ theme }) => ({
   marginBottom: theme.spacing(2),
   "& .MuiOutlinedInput-root": {
@@ -52,7 +49,6 @@ const InputField = styled(TextField)(({ theme }) => ({
   },
 }));
 
-// Button with hover animation
 const ButtonStyled = styled(Button)(({ theme }) => ({
   marginTop: theme.spacing(2),
   background: "linear-gradient(135deg, #6a11cb, #2575fc)",
@@ -76,6 +72,16 @@ const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Apply padding-top: 0 only for the login page
+  useEffect(() => {
+    document.body.style.paddingTop = "0px";
+
+    return () => {
+      // Reset padding when leaving the login page
+      document.body.style.paddingTop = "";
+    };
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();

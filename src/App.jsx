@@ -7,6 +7,8 @@ import DentRoute from "./Routes/DentRoute"
 import SoinRoutes from "./Routes/SoinRoute"
 import Navbar from './Components/Layout/Navbar';
 import UserRoutes from "./Routes/UserRoute";
+import ProduitRoute from "./Routes/ProduitRoute";
+import "./index.css"
 import './style.css'
 
 
@@ -18,7 +20,7 @@ function App() {
       <Navbar/>
         <PatientRoutes />
         <UserRoutes />
-
+      <ProduitRoute />
         <DocumentRoute />
         <DentRoute />
         <SoinRoutes />

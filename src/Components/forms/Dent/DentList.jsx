@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllDents, deleteDent } from "../../../Stores/DentSlice"; // Correct action names
+import { getAllDents, deleteDent } from "../../../Stores/DentSlice"; 
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import {
@@ -94,6 +94,9 @@ const DentList = () => {
       <Typography variant="h4" gutterBottom align="center" sx={{ fontWeight: 700, color: "#333" }}>
         Dent List
       </Typography>
+      <div className="h-screen bg-blue-500 flex items-center justify-center">
+      <h1 className="text-4xl font-bold text-white">Tailwind CSS is Working!</h1>
+    </div>
 
       <Stack direction="row" spacing={2} justifyContent="flex-end" mb={3}>
         <Button

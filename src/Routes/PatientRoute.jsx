@@ -5,7 +5,7 @@ import PatientFormModal from "../components/forms/Patient/PatientformModal";
 const PatientRoute = () => {
   return (
     <Routes>
-     <Route path="/" element={<PatientList />} />
+     <Route path="/patients" element={<PatientList />} />
       
       <Route path="/edit/:id" element={<PatientFormModal />} />
     </Routes>

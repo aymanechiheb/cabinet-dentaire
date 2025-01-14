@@ -8,6 +8,8 @@ import SoinRoutes from "./Routes/SoinRoute"
 import Navbar from './Components/Layout/Navbar';
 import UserRoutes from "./Routes/UserRoute";
 import ProduitRoute from "./Routes/ProduitRoute";
+import SalleConsultationRoute from "./Routes/SalleConsultationRoute";
+import MachineRoute from "./Routes/MachineRoute";
 import "./index.css"
 import './style.css'
 
@@ -24,7 +26,8 @@ function App() {
         <DocumentRoute />
         <DentRoute />
         <SoinRoutes />
-
+        <SalleConsultationRoute />
+        <MachineRoute />
 
 
       </Router>

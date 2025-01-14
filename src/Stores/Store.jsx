@@ -5,6 +5,8 @@ import dentReducer from './DentSlice'
 import soinReducer from './SoinSlice'
 import userReducer from './userSlice';
 import produitSlice from './produitSlice';
+import sallconsultationReducer from './salleConsultationSlice';
+import machineReducer from './MachineSlice';
 const store = configureStore({
   reducer: {
     patients: patientReducer,
@@ -13,6 +15,8 @@ const store = configureStore({
     soins :soinReducer,
     users:userReducer,
     produits:produitSlice,
+    salleConsultation:sallconsultationReducer,
+    machines: machineReducer,
   },
 });
 

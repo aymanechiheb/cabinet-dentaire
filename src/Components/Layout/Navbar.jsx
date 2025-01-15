@@ -30,7 +30,7 @@ function Navbar() {
             <nav id="navbar" className="navbar">
               <ul className="flex space-x-6">
               <li>
-                  <NavLink className="nav-link flex items-center space-x-2" to="/patient">
+                  <NavLink className="nav-link flex items-center space-x-2" to="/dashboard">
                     <Icon icon="mage:dashboard-chart-notification" width="33" height="26" />
                     <span>Dashboard</span>
                   </NavLink>

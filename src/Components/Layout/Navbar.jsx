@@ -3,7 +3,7 @@ import { Icon } from '@iconify/react';
 import '../../style.css';
 import { isAuthenticated } from '../../Helpers/authHelper';
 import { useDispatch } from 'react-redux';
-import { logout } from '../../Stores/userSlice';
+import { logout } from '../../Stores/authSlice'; // Make sure logout comes from authSlice
 import logo from '../../assets/logoo.png';
 function Navbar() {
 
@@ -43,7 +43,7 @@ function Navbar() {
                 </li>
                
                 <li>
-                  <NavLink className="nav-link flex items-center space-x-2" to="/patients">
+                  <NavLink className="nav-link flex items-center space-x-2" to="/users">
                     <Icon icon="fluent-emoji-high-contrast:health-worker" width="33" height="26" />
                     <span>Users</span>
                   </NavLink>

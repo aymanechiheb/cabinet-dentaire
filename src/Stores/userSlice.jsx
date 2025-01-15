@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import UserService from '../services/UserService';
 
-// Async Thunks for API calls
+// Async Thunks for User-related API calls
 export const registerUser = createAsyncThunk(
   'user/registerUser',
   async (userData, { rejectWithValue }) => {
@@ -10,21 +10,6 @@ export const registerUser = createAsyncThunk(
       return response;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Registration failed");
-    }
-  }
-);
-
-export const loginUser = createAsyncThunk(
-  'user/loginUser',
-  async (userData, { rejectWithValue }) => {
-    try {
-      const response = await UserService.login(userData);
-      if (!response.accessToken) {
-        return rejectWithValue("Invalid credentials");
-      }
-      return response;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Login failed");
     }
   }
 );
@@ -41,6 +26,18 @@ export const getUser = createAsyncThunk(
   }
 );
 
+export const getAllUsers = createAsyncThunk(
+  'user/getAllUsers',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await UserService.getAllUsers();
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to fetch users");
+    }
+  }
+);
+
 export const updateUser = createAsyncThunk(
   'user/updateUser',
   async ({ id, userData }, { rejectWithValue }) => {
@@ -52,6 +49,7 @@ export const updateUser = createAsyncThunk(
     }
   }
 );
+
 
 export const deleteUser = createAsyncThunk(
   'user/deleteUser',
@@ -65,35 +63,23 @@ export const deleteUser = createAsyncThunk(
   }
 );
 
-// Slice for User state management
 const userSlice = createSlice({
   name: 'user',
   initialState: {
-    user: JSON.parse(localStorage.getItem('user')) || null,
-    accessToken: localStorage.getItem('accessToken') || null,
-    refreshToken: localStorage.getItem('refreshToken') || null,
+    user: null, // Single user (for get, update, delete)
+    users: [], // List of users (for getAllUsers)
     loading: false,
     error: null,
   },
   reducers: {
-    logout: (state) => {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('user');
-      state.user = null;
-      state.accessToken = null;
-      state.refreshToken = null;
-      state.error = null; // Clear error on logout
-    },
     clearError: (state) => {
       state.error = null; // Clear error manually
     },
   },
   extraReducers: (builder) => {
-    // Handle loading and errors for all thunks
     const handlePending = (state) => {
       state.loading = true;
-      state.error = null; // Clear error on pending
+      state.error = null;
     };
     const handleRejected = (state, action) => {
       state.loading = false;
@@ -101,59 +87,61 @@ const userSlice = createSlice({
     };
 
     builder
+      // Register User
       .addCase(registerUser.pending, handlePending)
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.user;
-        state.accessToken = action.payload.accessToken;
-        state.refreshToken = action.payload.refreshToken;
-        localStorage.setItem('user', JSON.stringify(action.payload.user));
-        localStorage.setItem('accessToken', action.payload.accessToken);
-        localStorage.setItem('refreshToken', action.payload.refreshToken);
+        state.users.push(action.payload); // Add the new user to the users list
       })
       .addCase(registerUser.rejected, handleRejected)
 
-      .addCase(loginUser.pending, handlePending)
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload.user;
-        state.accessToken = action.payload.accessToken;
-        state.refreshToken = action.payload.refreshToken;
-        localStorage.setItem('user', JSON.stringify(action.payload.user));
-        localStorage.setItem('accessToken', action.payload.accessToken);
-        localStorage.setItem('refreshToken', action.payload.refreshToken);
-      })
-      .addCase(loginUser.rejected, handleRejected)
-
+      // Get User by ID
       .addCase(getUser.pending, handlePending)
       .addCase(getUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.user = action.payload; // Store the fetched user
       })
       .addCase(getUser.rejected, handleRejected)
 
+      // Get All Users
+      .addCase(getAllUsers.pending, handlePending)
+      .addCase(getAllUsers.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users = action.payload; // Store the list of users
+      })
+      .addCase(getAllUsers.rejected, handleRejected)
+
+      // Update User
       .addCase(updateUser.pending, handlePending)
       .addCase(updateUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
-        localStorage.setItem('user', JSON.stringify(action.payload));
+        const updatedUser = action.payload;
+        // Update the user in the users list
+        state.users = state.users.map((user) =>
+          user.id === updatedUser.id ? updatedUser : user
+        );
+        // If the updated user is the current user, update it
+        if (state.user && state.user.id === updatedUser.id) {
+          state.user = updatedUser;
+        }
       })
       .addCase(updateUser.rejected, handleRejected)
 
+      // Delete User
       .addCase(deleteUser.pending, handlePending)
-      .addCase(deleteUser.fulfilled, (state) => {
+      .addCase(deleteUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = null;
-        state.accessToken = null;
-        state.refreshToken = null;
-        localStorage.removeItem('user');
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
+        // Remove the deleted user from the users list
+        state.users = state.users.filter((user) => user.id !== action.payload.id);
+        // If the deleted user is the current user, clear it
+        if (state.user && state.user.id === action.payload.id) {
+          state.user = null;
+        }
       })
       .addCase(deleteUser.rejected, handleRejected);
   },
 });
 
-export const { logout, clearError } = userSlice.actions;
+export const { clearError } = userSlice.actions;
 
 export default userSlice.reducer;

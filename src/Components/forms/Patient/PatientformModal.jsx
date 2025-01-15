@@ -11,7 +11,7 @@ import {
   Grid,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { addPatient, editPatient } from "../../../Stores/PatientSlice";
+import { addPatient, editPatient,fetchPatients } from "../../../Stores/PatientSlice";
 import { toast } from "react-toastify";
 
 const PatientFormModal = ({ show, setShow, patient }) => {
@@ -70,9 +70,13 @@ const PatientFormModal = ({ show, setShow, patient }) => {
         // Dispatch the edit action
         await dispatch(editPatient({ id: patient.id, patient: formData })).unwrap();
         toast.success("Patient updated successfully.");
+         dispatch(fetchPatients());
+        
       } else {
         // Dispatch the add action
         await dispatch(addPatient(formData)).unwrap();
+        dispatch(fetchPatients());
+
         toast.success("Patient added successfully.");
       }
       setShow(false); // Close the modal

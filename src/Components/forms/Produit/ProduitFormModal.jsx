@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { addProduit, updateProduit } from "../../../Stores/produitSlice";
+import { addProduit, updateProduit,fetchProduits } from "../../../Stores/produitSlice";
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button } from "@mui/material";
 
 const ProduitFormModal = ({ produit, onClose }) => {
@@ -28,8 +28,11 @@ const ProduitFormModal = ({ produit, onClose }) => {
     e.preventDefault();
     if (produit) {
       dispatch(updateProduit({ ...produit, ...formData }));
+       dispatch(fetchProduits());
     } else {
       dispatch(addProduit(formData));
+      dispatch(fetchProduits());
+
     }
     onClose();
   };

@@ -12,7 +12,13 @@ axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      // Check if the token is in a valid JWT format
+      if (token.split('.').length === 3) {
+        config.headers.Authorization = `Bearer ${token}`;
+      } else {
+        console.error('Invalid JWT format');
+        throw new Error('Invalid JWT format');
+      }
     }
     return config;
   },
@@ -28,6 +34,7 @@ class UserService {
       .post('/register', userData)
       .then((response) => response.data)
       .catch((error) => {
+        console.error(error);
         throw new Error(error.response?.data?.message || 'Registration failed');
       });
   }
@@ -51,6 +58,7 @@ class UserService {
         return response.data;
       })
       .catch((error) => {
+        console.error(error);
         throw new Error(error.response?.data?.message || 'Login failed');
       });
   }
@@ -59,8 +67,11 @@ class UserService {
   getAllUsers() {
     return axiosInstance
       .get('/')
-      .then((response) => response.data)
+      .then((response) => {
+        return response.data; // Return the data
+      })
       .catch((error) => {
+        console.error(error.message || error); // Log the error for debugging
         throw new Error(error.response?.data?.message || 'Failed to fetch users');
       });
   }
@@ -71,19 +82,32 @@ class UserService {
       .get(`/${id}`)
       .then((response) => response.data)
       .catch((error) => {
+        console.error(error);
         throw new Error(error.response?.data?.message || 'Failed to fetch user');
       });
   }
 
   // Update user details
-  updateUser(id, userData) {
-    return axiosInstance
-      .put(`/${id}`, userData)
-      .then((response) => response.data)
-      .catch((error) => {
-        throw new Error(error.response?.data?.message || 'Failed to update user');
-      });
-  }
+ // Update user details
+updateUser(id, userData) {
+  const token = localStorage.getItem('accessToken'); // Retrieve the token for debugging
+  console.log('Debug Info:');
+  console.log('User ID to Update:', id);
+  console.log('User Data:', userData);
+  console.log('Authorization Token:', token);
+
+  return axiosInstance
+    .put(`/${id}`, userData)
+    .then((response) => {
+      console.log('Response from Backend:', response.data);
+      return response.data; // Return the response data to the caller
+    })
+    .catch((error) => {
+      console.error('Error from Backend:', error.response?.data || error.message);
+      throw new Error(error.response?.data?.message || 'Failed to update user');
+    });
+}
+
 
   // Delete user by ID
   deleteUser(id) {
@@ -91,6 +115,7 @@ class UserService {
       .delete(`/${id}`)
       .then((response) => response.data)
       .catch((error) => {
+        console.error(error);
         throw new Error(error.response?.data?.message || 'Failed to delete user');
       });
   }

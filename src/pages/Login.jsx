@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/system";
 import { ToastContainer, toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { loginUser } from "../Stores/userSlice";
+import { useDispatch, useSelector } from "react-redux";  // Import useSelector for accessing the state
+import { loginUser } from "../Stores/authSlice";  // Make sure to import from the authSlice
 import background from "../assets/background-img.jpg";
 import { TextField, Button, Typography, Paper, CircularProgress } from "@mui/material";
 
@@ -68,10 +68,10 @@ const ButtonStyled = styled(Button)(({ theme }) => ({
 const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { loading, error } = useSelector((state) => state.auth);  // Access loading and error from auth slice
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
 
   // Apply padding-top: 0 only for the login page
   useEffect(() => {
@@ -85,7 +85,6 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
     try {
       const result = await dispatch(loginUser({ username, password })).unwrap();
@@ -93,8 +92,6 @@ const LoginPage = () => {
       navigate("/dashboard");
     } catch (error) {
       toast.error(error.message || "Invalid credentials or server error");
-    } finally {
-      setLoading(false);
     }
   };
 

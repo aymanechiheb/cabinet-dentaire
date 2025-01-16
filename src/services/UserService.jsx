@@ -75,6 +75,7 @@ class UserService {
         throw new Error(error.response?.data?.message || 'Failed to fetch users');
       });
   }
+  
 
   // Get user by ID
   getUserById(id) {

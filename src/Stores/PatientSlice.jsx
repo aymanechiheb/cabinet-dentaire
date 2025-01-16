@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getPatients, createPatient, updatePatient, deletePatient } from '../services/PatientService';
+import { getPatients, createPatient, updatePatient, deletePatient,getPatientById } from '../services/PatientService';
 
 export const fetchPatients = createAsyncThunk('patients/fetchPatients', async (_, { rejectWithValue }) => {
   try {
@@ -38,6 +38,18 @@ export const removePatient = createAsyncThunk('patients/removePatient', async (i
     return rejectWithValue(error.response?.data || 'Failed to delete patient');
   }
 });
+// Function to get a patient by ID
+// Thunk to fetch a patient by ID
+export const fetchPatientById = createAsyncThunk('patients/fetchPatientById', async (id, { rejectWithValue }) => {
+  try {
+    const data = await getPatientById(id);
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.response?.data || 'Failed to fetch patient');
+  }
+});
+
+
 
 const patientSlice = createSlice({
   name: 'patients',
@@ -65,6 +77,11 @@ const patientSlice = createSlice({
       // Add Patient
       .addCase(addPatient.fulfilled, (state, action) => {
         state.list.push(action.payload);
+      })
+      // Fetch Patient by ID
+      .addCase(fetchPatientById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
       // Edit Patient
       .addCase(editPatient.fulfilled, (state, action) => {

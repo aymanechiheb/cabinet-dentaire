@@ -63,6 +63,7 @@ export const deleteUser = createAsyncThunk(
   }
 );
 
+
 const userSlice = createSlice({
   name: 'user',
   initialState: {
@@ -81,6 +82,7 @@ const userSlice = createSlice({
       state.loading = true;
       state.error = null;
     };
+    
     const handleRejected = (state, action) => {
       state.loading = false;
       state.error = action.payload || action.error.message;

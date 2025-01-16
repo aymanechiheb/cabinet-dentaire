@@ -13,7 +13,14 @@ export const getPatients = async () => {
     throw error;
   }
 };
-
+export const getPatientById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 // Function to create a new patient
 export const createPatient = async (patient) => {
   try {

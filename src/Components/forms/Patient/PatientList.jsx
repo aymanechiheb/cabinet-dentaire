@@ -20,6 +20,8 @@ import {
 } from "@mui/material";
 import { Add, Edit, Delete, Visibility, DocumentScanner } from "@mui/icons-material";
 import PatientFormModal from "./PatientformModal";
+import { createAppointment } from "../../../Stores/AppointmentSlice";
+import AppointmentFormModal from "../Appointment/AppointmentFormModal"; // Make sure you have this modal component
 
 const PatientList = () => {
   const dispatch = useDispatch();
@@ -29,8 +31,10 @@ const PatientList = () => {
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [showModal, setShowModal] = React.useState(false);
+  const [showPatientModal, setShowPatientModal] = React.useState(false);
+  const [showAppointmentModal, setShowAppointmentModal] = React.useState(false);
   const [currentPatient, setCurrentPatient] = React.useState(null);
+  const [selectedPatientId, setSelectedPatientId] = React.useState(null);
 
   useEffect(() => {
     dispatch(fetchPatients());
@@ -58,7 +62,7 @@ const PatientList = () => {
 
   const handleEditPatient = (patient) => {
     setCurrentPatient(patient);
-    setShowModal(true);
+    setShowPatientModal(true);
   };
 
   const handleViewDocuments = (patientId) => {
@@ -83,6 +87,22 @@ const PatientList = () => {
     );
   };
 
+  const handleAddRendezvous = (patientId) => {
+    setSelectedPatientId(patientId);
+    setShowAppointmentModal(true);
+  };
+
+  const handleCreateAppointment = (appointmentData) => {
+    dispatch(createAppointment(appointmentData))
+      .unwrap()
+      .then(() => {
+        toast.success("Appointment scheduled successfully.");
+      })
+      .catch(() => {
+        toast.error("Failed to schedule appointment.");
+      });
+  };
+
   const paginatedPatients = patients.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
@@ -94,7 +114,6 @@ const PatientList = () => {
         <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, color: "#333", marginBottom: 3, textAlign: "center" }}>
           Patient List
         </Typography>
-        
 
         <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ marginBottom: 3 }}>
           <Button
@@ -102,7 +121,7 @@ const PatientList = () => {
             color="primary"
             startIcon={<Add />}
             onClick={() => {
-              setShowModal(true);
+              setShowPatientModal(true);
               setCurrentPatient(null);
             }}
             sx={{
@@ -184,6 +203,17 @@ const PatientList = () => {
                       >
                         <DocumentScanner />
                       </IconButton>
+                      <IconButton
+                        color="primary"
+                        onClick={() => handleAddRendezvous(patient.id)}
+                        sx={{
+                          "&:hover": {
+                            backgroundColor: "#e1f5fe",
+                          },
+                        }}
+                      >
+                        <Add />
+                      </IconButton>
                     </Stack>
                   </TableCell>
                 </TableRow>
@@ -202,11 +232,20 @@ const PatientList = () => {
           />
         </TableContainer>
 
-        {showModal && (
+        {showPatientModal && (
           <PatientFormModal
-            show={showModal}
-            setShow={setShowModal}
+            show={showPatientModal}
+            setShow={setShowPatientModal}
             patient={currentPatient}
+          />
+        )}
+
+        {showAppointmentModal && (
+          <AppointmentFormModal
+            show={showAppointmentModal}
+            setShow={setShowAppointmentModal}
+            patientId={selectedPatientId}
+            onCreateAppointment={handleCreateAppointment}
           />
         )}
 

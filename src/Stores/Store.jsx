@@ -8,6 +8,9 @@ import produitSlice from './produitSlice';
 import sallconsultationReducer from './salleConsultationSlice';
 import machineReducer from './MachineSlice';
 import authReducer from './authSlice';
+import appointmentReducer from './AppointmentSlice';
+import { fetchPatients } from './PatientSlice'; // Import de l'action fetchPatients
+import { getAllUsers } from './userSlice';
 const store = configureStore({
   reducer: {
     patients: patientReducer,
@@ -15,12 +18,14 @@ const store = configureStore({
     dents:dentReducer,
     soins :soinReducer,
     users:userReducer,
-    auth: authReducer, // Added authentication state (login/logout)
+    auth: authReducer, 
+    appointments: appointmentReducer,
 
     produits:produitSlice,
     salleConsultation:sallconsultationReducer,
     machines: machineReducer,
   },
 });
-
+store.dispatch(fetchPatients());
+store.dispatch(getAllUsers());
 export default store;

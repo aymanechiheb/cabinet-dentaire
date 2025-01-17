@@ -67,19 +67,21 @@ const AppointmentFormModal = ({ show, setShow, patientId }) => {
           sx={{ marginBottom: 2 }}
         />
         <FormControl fullWidth sx={{ marginBottom: 2 }}>
-          <InputLabel>User</InputLabel>
-          <Select
-            value={idUser}
-            onChange={(e) => setIdUser(e.target.value)}
-            label="User"
-          >
-            {users.map((user) => (
-              <MenuItem key={user.id} value={user.id}>
-                {user.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+  <InputLabel>DOCTOR</InputLabel>
+  <Select
+    value={idUser}
+    onChange={(e) => setIdUser(e.target.value)}
+    label="User"
+  >
+    {users
+      .filter((user) => user.role === "DOCTOR") // Filter users by role
+      .map((user) => (
+        <MenuItem key={user.id} value={user.id}>
+          {user.name}
+        </MenuItem>
+      ))}
+  </Select>
+</FormControl>
         <Button
           variant="contained"
           color="primary"

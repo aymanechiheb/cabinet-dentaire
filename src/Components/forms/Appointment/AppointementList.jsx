@@ -1,9 +1,10 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAppointments } from "../../../Stores/AppointmentSlice";
+import { fetchAppointments, fetchAppointmentsByPatient, fetchAppointmentsByUser } from "../../../Stores/AppointmentSlice";
 import { ToastContainer, toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation,useParams  } from "react-router-dom";
 import {
   Table,
   TableContainer,
@@ -12,12 +13,11 @@ import {
   TableCell,
   TableBody,
   TablePagination,
-  Button,
-  Paper,
+  Box,
   Typography,
   Stack,
   IconButton,
-  Box,
+  Paper,
 } from "@mui/material";
 import { Add, Edit, Delete, Visibility } from "@mui/icons-material";
 import AppointmentFormModal from "../Appointment/AppointmentFormModal";
@@ -25,10 +25,13 @@ import AppointmentFormModal from "../Appointment/AppointmentFormModal";
 const RendezvousListComponent = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { patientId,userId } = useParams();  
 
+  console.log("Received patientId:", patientId)
   const { appointments, loading, error } = useSelector((state) => state.appointments);
   const users = useSelector((state) => state.users.users);
   const patients = useSelector((state) => state.patients.list);
+  console.log("Received patientId:", patientId); // Vérifier que patientId est bien récupéré
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -36,8 +39,16 @@ const RendezvousListComponent = () => {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchAppointments());
-  }, [dispatch]);
+    if (patientId) {
+      console.log("Fetching appointments for patient:", patientId);
+
+      dispatch(fetchAppointmentsByPatient(patientId)); // Fetch by patientId
+    } else if (userId) {
+      dispatch(fetchAppointmentsByUser(userId)); // Fetch by userId
+    } else {
+      dispatch(fetchAppointments()); // Fetch all appointments
+    }
+  }, [dispatch, patientId, userId]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -49,7 +60,7 @@ const RendezvousListComponent = () => {
   };
 
   const handleCreateAppointment = (appointmentData) => {
-    dispatch((appointmentData))
+    dispatch(appointmentData)
       .unwrap()
       .then(() => {
         toast.success("Rendez-vous ajouté avec succès.");

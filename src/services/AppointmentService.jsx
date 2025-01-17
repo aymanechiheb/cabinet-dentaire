@@ -26,13 +26,24 @@ const fetchAppointmentById = async (appointmentId) => {
   const response = await axios.get(`${API_URL}${appointmentId}`);
   return response.data;
 };
+const fetchAppointmentsByUser = async (userId) => {
+  const response = await axios.get(`${API_URL}appointmentByUser/${userId}`);
+  return response.data;
+};
+
+const fetchAppointmentsByPatient = async (patientId) => {
+  const response = await axios.get(`${API_URL}appointmentByPatient/${patientId}`);
+  return response.data;
+};
 
 const AppointmentService = {
   createAppointment,
   updateAppointment,
   deleteAppointment,
   fetchAppointments,
-  fetchAppointmentById,
+  fetchAppointmentById,fetchAppointmentsByPatient,
+  fetchAppointmentsByUser
+
 };
 
 export default AppointmentService;

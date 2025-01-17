@@ -10,6 +10,7 @@ import UserRoutes from "./Routes/UserRoute";
 import ProduitRoute from "./Routes/ProduitRoute";
 import SalleConsultationRoute from "./Routes/SalleConsultationRoute";
 import MachineRoute from "./Routes/MachineRoute";
+import AppointmentRoutes from "./Routes/AppointmentRoutes";
 import "./index.css"
 import './style.css'
 
@@ -28,7 +29,7 @@ function App() {
         <SoinRoutes />
         <SalleConsultationRoute />
         <MachineRoute />
-
+<AppointmentRoutes/>
 
       </Router>
     </Provider>

@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchPatients, removePatient } from "../../../Stores/PatientSlice";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { History } from "@mui/icons-material"; // Import the History icon
+
 import {
   Table,
   TableContainer,
@@ -67,6 +69,11 @@ const PatientList = () => {
 
   const handleViewDocuments = (patientId) => {
     navigate(`/documents/${patientId}`, { state: { patientId } });
+  };
+  const handleHistory = (patientId) => {
+    console.log("Navigating with patientId:", patientId);
+
+    navigate(`/appointments/patient/${patientId}`); // Navigate to the appointments list for the patient
   };
 
   const handleViewPatient = (patient) => {
@@ -214,6 +221,21 @@ const PatientList = () => {
                       >
                         <Add />
                       </IconButton>
+                      <IconButton
+  color="default"
+  onClick={() => {
+    console.log("patientid",patient.id); // Ajouté dans la fonction onClick
+    handleHistory(patient.id); // Navigation vers l'historique
+  }}
+  sx={{
+    "&:hover": {
+      backgroundColor: "#f3f4f6",
+    },
+  }}
+>
+  <History />
+</IconButton>
+
                     </Stack>
                   </TableCell>
                 </TableRow>

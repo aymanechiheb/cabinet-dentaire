@@ -36,6 +36,21 @@ export const deleteAppointment = createAsyncThunk(
     return appointmentId;
   }
 );
+export const fetchAppointmentsByUser = createAsyncThunk(
+  "appointments/fetchAppointmentsByUser",
+  async (userId) => {
+    const response = await AppointmentService.fetchAppointmentsByUser(userId);
+    return response;
+  }
+);
+
+// Fetch appointments by patient ID
+export const fetchAppointmentsByPatient = createAsyncThunk(
+  "appointments/fetchAppointmentsByPatient",
+  async (patientId) => {
+    const response = await AppointmentService.fetchAppointmentsByPatient(patientId);
+    return response;
+  });
 
 // Initial state
 const initialState = {
@@ -106,9 +121,33 @@ const appointmentSlice = createSlice({
       .addCase(deleteAppointment.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+      // Fetch appointments by user
+      .addCase(fetchAppointmentsByUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchAppointmentsByUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.appointments = action.payload;
+      })
+      .addCase(fetchAppointmentsByUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      // Fetch appointments by patient
+      .addCase(fetchAppointmentsByPatient.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchAppointmentsByPatient.fulfilled, (state, action) => {
+        state.loading = false;
+        state.appointments = action.payload;
+      })
+      .addCase(fetchAppointmentsByPatient.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
       });
-  },
-});
+  }
+});  
 
 // Export the reducer
 export default appointmentSlice.reducer;

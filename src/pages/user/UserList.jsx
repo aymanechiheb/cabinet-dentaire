@@ -4,11 +4,14 @@ import { getAllUsers, deleteUser } from "../../Stores/userSlice";
 import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import HistoryIcon from "@mui/icons-material/History"; // Import the History icon
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import UserFormModal from '../../Components/User/UserFormModal';
 
 const UserList = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Initialize useNavigate
   const { users = [], loading, error } = useSelector((state) => state.users || {});
 
   const [showModal, setShowModal] = useState(false);
@@ -33,6 +36,10 @@ const UserList = () => {
   const handleEditUser = (user) => {
     setSelectedUser(user);
     setShowModal(true);
+  };
+
+  const handleViewHistory = (userId) => {
+    navigate(`/appointments/user/${userId}`); // Navigate to the appointments list for the user
   };
 
   return (
@@ -83,6 +90,12 @@ const UserList = () => {
                     <IconButton onClick={() => handleDeleteUser(user.id)}>
                       <DeleteIcon />
                     </IconButton>
+                    {/* Conditionally render the History button for DOCTOR role */}
+                    {user.role === "DOCTOR" && (
+                      <IconButton onClick={() => handleViewHistory(user.id)}>
+                        <HistoryIcon />
+                      </IconButton>
+                    )}
                   </TableCell>
                 </TableRow>
               ))

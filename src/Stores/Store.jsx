@@ -9,8 +9,13 @@ import sallconsultationReducer from './salleConsultationSlice';
 import machineReducer from './MachineSlice';
 import authReducer from './authSlice';
 import appointmentReducer from './AppointmentSlice';
-import { fetchPatients } from './PatientSlice'; // Import de l'action fetchPatients
+import { fetchPatients } from './PatientSlice'; 
 import { getAllUsers } from './userSlice';
+import pcareReducer from './PCare';
+import produitConsomableReducer from './produitConsomableSlice';
+import { enableMapSet } from "immer";
+enableMapSet();
+
 const store = configureStore({
   reducer: {
     patients: patientReducer,
@@ -20,10 +25,11 @@ const store = configureStore({
     users:userReducer,
     auth: authReducer, 
     appointments: appointmentReducer,
-
     produits:produitSlice,
     salleConsultation:sallconsultationReducer,
     machines: machineReducer,
+    produitsConsommables: produitConsomableReducer,
+    pcare:pcareReducer,
   },
 });
 store.dispatch(fetchPatients());

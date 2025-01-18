@@ -5,6 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAppointments, fetchAppointmentsByPatient, fetchAppointmentsByUser } from "../../../Stores/AppointmentSlice";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate,useLocation,useParams  } from "react-router-dom";
+import { Button  } from "@mui/material";
+import { fetchPCareByAppointment } from "../../../Stores/PCare";
+
 import {
   Table,
   TableContainer,
@@ -19,7 +22,7 @@ import {
   IconButton,
   Paper,
 } from "@mui/material";
-import { Add, Edit, Delete, Visibility } from "@mui/icons-material";
+import { Add, Edit, Delete, Visibility ,Info} from "@mui/icons-material";
 import AppointmentFormModal from "../Appointment/AppointmentFormModal";
 
 const RendezvousListComponent = () => {
@@ -52,6 +55,13 @@ const RendezvousListComponent = () => {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+  };
+  const handleNavigateToDetails = (appointmentId) => {
+    
+        navigate(`/rendezvous/details/${appointmentId}`,);
+      
+      
+      
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -149,6 +159,17 @@ const RendezvousListComponent = () => {
                       >
                         <Delete />
                       </IconButton>
+                    
+    <Button
+      variant="contained"
+      color="info"
+      size="small"
+      startIcon={<Info />}
+      onClick={() => handleNavigateToDetails(appointment.id)}
+    >
+      Détails
+    </Button>
+                      
                     </Stack>
                   </TableCell>
                 </TableRow>

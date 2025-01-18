@@ -55,6 +55,12 @@ function Navbar() {
                   </NavLink>
                 </li>
                 <li>
+                  <NavLink className="nav-link flex items-center space-x-2" to="/appointments">
+                    <Icon icon="ic:baseline-add-circle-outline" width="33" height="26" />
+                    <span>appointment</span>
+                  </NavLink>
+                </li>
+                <li>
                   <NavLink className="nav-link flex items-center space-x-2" to="/patients">
                     <Icon icon="ic:outline-supervised-user-circle" width="33" height="26" />
                     <span>Patients</span>

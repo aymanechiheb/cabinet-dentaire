@@ -11,6 +11,7 @@ import ProduitRoute from "./Routes/ProduitRoute";
 import SalleConsultationRoute from "./Routes/SalleConsultationRoute";
 import MachineRoute from "./Routes/MachineRoute";
 import AppointmentRoutes from "./Routes/AppointmentRoutes";
+import PrivateRoute from "./Routes/PrivateRoute";
 import "./index.css"
 import './style.css'
 
@@ -21,6 +22,7 @@ function App() {
      
       <Router>
       <Navbar/>
+      <PrivateRoute/>
         <PatientRoutes />
         <UserRoutes />
       <ProduitRoute />

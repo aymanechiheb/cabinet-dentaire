@@ -1,16 +1,15 @@
-
 import { Route, Routes } from "react-router-dom";
+import PrivateRoute from "./PrivateRoute";
 import ListProduit from "../pages/Produit/ListProduit"; 
 import ProduitFormModal from "../Components/forms/Produit/ProduitFormModal"; 
 
 const ProduitRoute = () => {
   return (
     <Routes>
-      {/* Route for listing all produits */}
-      <Route path="/Produits" element={<ListProduit />} />
-
-      {/* Route for editing or adding a produit */}
-      <Route path="/Produitform" element={<ProduitFormModal />} />
+      <Route element={<PrivateRoute />}>
+        <Route path="/Produits" element={<ListProduit />} />
+        <Route path="/Produitform" element={<ProduitFormModal />} />
+      </Route>
     </Routes>
   );
 };

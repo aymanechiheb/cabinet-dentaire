@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllDents, deleteDent } from "../../../Stores/DentSlice"; 
+import { getAllDents, deleteDent } from "../../../Stores/DentSlice";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import {
@@ -18,10 +18,11 @@ import {
   Stack,
   IconButton,
   Box,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
-import { Add, Edit, Delete, Visibility } from "@mui/icons-material"; // Icons
-
-import DentFormModal from "./DentFormModal"; 
+import { Add, Edit, Delete, Visibility, Search } from "@mui/icons-material"; // Added Search icon
+import DentFormModal from "./DentFormModal";
 
 const DentList = () => {
   const dispatch = useDispatch();
@@ -31,16 +32,26 @@ const DentList = () => {
   const { dents, loading, error } = useSelector((state) => state.dents);
 
   // Local state for pagination
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   // Modal state
-  const [showModal, setShowModal] = React.useState(false);
-  const [currentDent, setCurrentDent] = React.useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [currentDent, setCurrentDent] = useState(null);
+
+  // Search state
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     dispatch(getAllDents()); // Fetch all dents when component mounts
   }, [dispatch]);
+
+  // Handle search functionality
+  const filteredDents = dents.filter(
+    (dent) =>
+      dent.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      dent.code.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -87,16 +98,33 @@ const DentList = () => {
     setCurrentDent(null);
   };
 
-  const paginatedDents = dents.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const paginatedDents = filteredDents.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   return (
     <Box sx={{ padding: 3, boxShadow: 5, borderRadius: 2, backgroundColor: "#f9f9f9" }}>
-      <Typography variant="h4" gutterBottom align="center" sx={{ fontWeight: 700, color: "#333" }}>
+      <Typography variant="h4" gutterBottom align="center" sx={{ fontWeight: 700, color: "#333", mb: 3 }}>
         Dent List
       </Typography>
-      <div className="h-screen bg-blue-500 flex items-center justify-center">
-      <h1 className="text-4xl font-bold text-white">Tailwind CSS is Working!</h1>
-    </div>
+
+      {/* Search Bar */}
+      <TextField
+        fullWidth
+        variant="outlined"
+        placeholder="Search by position or code..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        sx={{ mb: 3 }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <Search />
+            </InputAdornment>
+          ),
+        }}
+      />
 
       <Stack direction="row" spacing={2} justifyContent="flex-end" mb={3}>
         <Button
@@ -109,6 +137,7 @@ const DentList = () => {
             boxShadow: 3,
             "&:hover": {
               boxShadow: 6,
+              backgroundColor: "#1976d2",
             },
           }}
         >
@@ -122,10 +151,10 @@ const DentList = () => {
       <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: 3, backgroundColor: "#fff" }}>
         <Table>
           <TableHead>
-            <TableRow>
-              <TableCell sx={{ fontWeight: "bold", backgroundColor: "#f0f0f0" }}>Position</TableCell>
-              <TableCell sx={{ fontWeight: "bold", backgroundColor: "#f0f0f0" }}>Code</TableCell>
-              <TableCell sx={{ fontWeight: "bold", backgroundColor: "#f0f0f0" }}>Actions</TableCell>
+            <TableRow sx={{ backgroundColor: "#f0f0f0" }}>
+              <TableCell sx={{ fontWeight: "bold" }}>Position</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Code</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -166,7 +195,7 @@ const DentList = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={dents.length}
+          count={filteredDents.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

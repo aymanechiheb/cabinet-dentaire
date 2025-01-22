@@ -6,7 +6,8 @@ import SalleConsultationFormModal from "../Components/SalleConsultation/SalleCon
 const SalleConsultationRoute = () => {
   return (
     <Routes>
-      <Route element={<PrivateRoute />}>
+      {/* Protected route for ADMIN */}
+      <Route element={<PrivateRoute requiredRoles={['ADMIN']} />}>
         <Route path="/salles" element={<SalleConsultationList />} />
         <Route path="/salles/new" element={<SalleConsultationFormModal />} />
         <Route path="/salles/edit/:id" element={<SalleConsultationFormModal />} />

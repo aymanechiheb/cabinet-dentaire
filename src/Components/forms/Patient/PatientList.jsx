@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPatients, removePatient } from "../../../Stores/PatientSlice";
 import { ToastContainer, toast } from "react-toastify";
@@ -19,8 +19,10 @@ import {
   Stack,
   IconButton,
   Box,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
-import { Add, Edit, Delete, Visibility, DocumentScanner } from "@mui/icons-material";
+import { Add, Edit, Delete, Visibility, DocumentScanner, Search } from "@mui/icons-material";
 import PatientFormModal from "./PatientformModal";
 import { createAppointment } from "../../../Stores/AppointmentSlice";
 import AppointmentFormModal from "../Appointment/AppointmentFormModal"; // Make sure you have this modal component
@@ -37,6 +39,7 @@ const PatientList = () => {
   const [showAppointmentModal, setShowAppointmentModal] = React.useState(false);
   const [currentPatient, setCurrentPatient] = React.useState(null);
   const [selectedPatientId, setSelectedPatientId] = React.useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     dispatch(fetchPatients());
@@ -70,9 +73,9 @@ const PatientList = () => {
   const handleViewDocuments = (patientId) => {
     navigate(`/documents/${patientId}`, { state: { patientId } });
   };
+
   const handleHistory = (patientId) => {
     console.log("Navigating with patientId:", patientId);
-
     navigate(`/appointments/patient/${patientId}`); // Navigate to the appointments list for the patient
   };
 
@@ -110,7 +113,14 @@ const PatientList = () => {
       });
   };
 
-  const paginatedPatients = patients.slice(
+  const filteredPatients = patients.filter(patient =>
+    patient.fullname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    patient.adresse.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    patient.telephone.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    patient.cin.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const paginatedPatients = filteredPatients.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
@@ -122,7 +132,21 @@ const PatientList = () => {
           Patient List
         </Typography>
 
-        <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ marginBottom: 3 }}>
+        <Stack direction="row" spacing={2} justifyContent="space-between" sx={{ marginBottom: 3 }}>
+          <TextField
+            variant="outlined"
+            placeholder="Search patients..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            sx={{ width: "300px" }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+            }}
+          />
           <Button
             variant="contained"
             color="primary"
@@ -222,20 +246,19 @@ const PatientList = () => {
                         <Add />
                       </IconButton>
                       <IconButton
-  color="default"
-  onClick={() => {
-    console.log("patientid",patient.id); // Ajouté dans la fonction onClick
-    handleHistory(patient.id); // Navigation vers l'historique
-  }}
-  sx={{
-    "&:hover": {
-      backgroundColor: "#f3f4f6",
-    },
-  }}
->
-  <History />
-</IconButton>
-
+                        color="default"
+                        onClick={() => {
+                          console.log("patientid", patient.id);
+                          handleHistory(patient.id);
+                        }}
+                        sx={{
+                          "&:hover": {
+                            backgroundColor: "#f3f4f6",
+                          },
+                        }}
+                      >
+                        <History />
+                      </IconButton>
                     </Stack>
                   </TableCell>
                 </TableRow>
@@ -246,7 +269,7 @@ const PatientList = () => {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={patients.length}
+            count={filteredPatients.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

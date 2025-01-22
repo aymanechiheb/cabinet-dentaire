@@ -85,14 +85,29 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
     try {
       const result = await dispatch(loginUser({ username, password })).unwrap();
       toast.success("Login successful!");
-      navigate("/dashboard");
+      
+      const user = result?.user; // Extract the user object from the response
+      const role = user?.role;  // Get the user's role
+  
+      // Navigate based on the user's role
+      if (role === "ADMIN") {
+        navigate("/dashboard");
+      } else if (role === "USER") {
+        navigate("/appointments");
+      } else if (role === "DOCTOR") {
+        navigate(`/appointments/user/${user.id}`);
+      } else {
+        navigate("/dashboard");  // Default page if role doesn't match
+      }
     } catch (error) {
       toast.error(error.message || "Invalid credentials or server error");
     }
+  
+  
   };
 
   return (

@@ -4,10 +4,8 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAppointments, fetchAppointmentsByPatient, fetchAppointmentsByUser } from "../../../Stores/AppointmentSlice";
 import { ToastContainer, toast } from "react-toastify";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
-import { Button, TextField, InputAdornment } from "@mui/material";
-import { fetchPCareByAppointment } from "../../../Stores/PCare";
-
+import { useNavigate, useParams } from "react-router-dom";
+import { Button, TextField, InputAdornment, CircularProgress, Alert } from "@mui/material";
 import {
   Table,
   TableContainer,
@@ -24,6 +22,7 @@ import {
 } from "@mui/material";
 import { Add, Edit, Delete, Visibility, Info, Search } from "@mui/icons-material";
 import AppointmentFormModal from "../Appointment/AppointmentFormModal";
+import "react-toastify/dist/ReactToastify.css";
 
 const RendezvousListComponent = () => {
   const dispatch = useDispatch();
@@ -54,9 +53,12 @@ const RendezvousListComponent = () => {
     setPage(newPage);
   };
 
-  const handleNavigateToDetails = (appointmentId) => {
-    navigate(`/rendezvous/details/${appointmentId}`);
+  const handleNavigateToDetails = (appointmentId, doctorName, patientName) => {
+    navigate(`/rendezvous/details/${appointmentId}`, {
+      state: { doctorName, patientName },
+    });
   };
+  
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -105,9 +107,37 @@ const RendezvousListComponent = () => {
   );
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", backgroundColor: "#f5f5f5", padding: 3 }}>
-      <Box sx={{ width: "90%", maxWidth: "1200px", padding: 3, backgroundColor: "#ffffff", borderRadius: 3, boxShadow: 3 }}>
-        <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, color: "#333", marginBottom: 3, textAlign: "center" }}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        backgroundColor: "#f0f4f8",
+        padding: 3,
+      }}
+    >
+      <Box
+        sx={{
+          width: "90%",
+          maxWidth: "1200px",
+          padding: 3,
+          backgroundColor: "#ffffff",
+          borderRadius: 4,
+          boxShadow: 5,
+        }}
+      >
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{
+            fontWeight: 700,
+            color: "#333",
+            marginBottom: 3,
+            textAlign: "center",
+            fontFamily: "'Poppins', sans-serif",
+          }}
+        >
           Liste des Rendez-vous
         </Typography>
 
@@ -117,93 +147,109 @@ const RendezvousListComponent = () => {
           placeholder="Rechercher par médecin ou patient..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{ marginBottom: 3 }}
+          sx={{
+            marginBottom: 3,
+            backgroundColor: "#f9f9f9",
+            borderRadius: 2,
+          }}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <Search />
+                <Search sx={{ color: "#666" }} />
               </InputAdornment>
             ),
           }}
         />
 
-        {loading && <Typography>Chargement...</Typography>}
-        {error && <Typography color="error">Erreur: {error}</Typography>}
-
-        <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: 3 }}>
-          <Table sx={{ minWidth: 650 }}>
-            <TableHead>
-              <TableRow>
-                <TableCell><strong>Date & Heure</strong></TableCell>
-                <TableCell><strong>Statut</strong></TableCell>
-                <TableCell><strong>Motif</strong></TableCell>
-                <TableCell><strong>Notes</strong></TableCell>
-                <TableCell><strong>Doctor</strong></TableCell>
-                <TableCell><strong>Patient</strong></TableCell>
-                <TableCell><strong>Actions</strong></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {paginatedAppointments.map((appointment) => (
-                <TableRow key={appointment.id} hover>
-                  <TableCell>{new Date(appointment.startDateTime).toLocaleString()}</TableCell>
-                  <TableCell>{appointment.status}</TableCell>
-                  <TableCell>{appointment.motif}</TableCell>
-                  <TableCell>{appointment.notes}</TableCell>
-                  <TableCell>{users.find((user) => user.id === appointment.idUser)?.name || "Utilisateur inconnu"}</TableCell>
-                  <TableCell>{patients.find((patient) => patient.id === appointment.idPatient)?.fullname || "Patient inconnu"}</TableCell>
-                  <TableCell>
-                    <Stack direction="row" spacing={1}>
-                      <IconButton
-                        color="primary"
-                        onClick={() => handleViewAppointment(appointment)}
-                        sx={{ "&:hover": { backgroundColor: "#e0f7fa" } }}
-                      >
-                        <Visibility />
-                      </IconButton>
-                      <IconButton
-                        color="secondary"
-                        onClick={() => {
-                          setSelectedAppointment(appointment);
-                          setShowAppointmentModal(true);
-                        }}
-                        sx={{ "&:hover": { backgroundColor: "#e8f5e9" } }}
-                      >
-                        <Edit />
-                      </IconButton>
-                      <IconButton
-                        color="error"
-                        onClick={() => (appointment.id)}
-                        sx={{ "&:hover": { backgroundColor: "#ffebee" } }}
-                      >
-                        <Delete />
-                      </IconButton>
-                      <Button
-                        variant="contained"
-                        color="info"
-                        size="small"
-                        startIcon={<Info />}
-                        onClick={() => handleNavigateToDetails(appointment.id)}
-                      >
-                        Détails
-                      </Button>
-                    </Stack>
-                  </TableCell>
+        {loading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "200px" }}>
+            <CircularProgress />
+          </Box>
+        ) : error ? (
+          <Alert severity="error">{error}</Alert>
+        ) : (
+          <TableContainer component={Paper} sx={{ borderRadius: 4, boxShadow: 5 }}>
+            <Table sx={{ minWidth: 650 }}>
+              <TableHead>
+                <TableRow>
+                  <TableCell><strong>Date & Heure</strong></TableCell>
+                  <TableCell><strong>Statut</strong></TableCell>
+                  <TableCell><strong>Motif</strong></TableCell>
+                  <TableCell><strong>Notes</strong></TableCell>
+                  <TableCell><strong>Docteur</strong></TableCell>
+                  <TableCell><strong>Patient</strong></TableCell>
+                  <TableCell><strong>Actions</strong></TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {paginatedAppointments.map((appointment) => (
+                  <TableRow key={appointment.id} hover>
+                    <TableCell>{new Date(appointment.startDateTime).toLocaleString()}</TableCell>
+                    <TableCell>{appointment.status}</TableCell>
+                    <TableCell>{appointment.motif}</TableCell>
+                    <TableCell>{appointment.notes}</TableCell>
+                    <TableCell>{users.find((user) => user.id === appointment.idUser)?.name || "Utilisateur inconnu"}</TableCell>
+                    <TableCell>{patients.find((patient) => patient.id === appointment.idPatient)?.fullname || "Patient inconnu"}</TableCell>
+                    <TableCell>
+                      <Stack direction="row" spacing={1}>
+                        <IconButton
+                          color="primary"
+                          onClick={() => handleViewAppointment(appointment)}
+                          sx={{ "&:hover": { backgroundColor: "#e3f2fd" } }}
+                        >
+                          <Visibility />
+                        </IconButton>
+                        <IconButton
+                          color="secondary"
+                          onClick={() => {
+                            setSelectedAppointment(appointment);
+                            setShowAppointmentModal(true);
+                          }}
+                          sx={{ "&:hover": { backgroundColor: "#e8f5e9" } }}
+                        >
+                          <Edit />
+                        </IconButton>
+                        <IconButton
+                          color="error"
+                          onClick={() => (appointment.id)}
+                          sx={{ "&:hover": { backgroundColor: "#ffebee" } }}
+                        >
+                          <Delete />
+                        </IconButton>
+                        <Button
+  variant="contained"
+  color="info"
+  size="small"
+  startIcon={<Info />}
+  onClick={() =>
+    handleNavigateToDetails(
+      appointment.id,
+      users.find((user) => user.id === appointment.idUser)?.name || "Utilisateur inconnu",
+      patients.find((patient) => patient.id === appointment.idPatient)?.fullname || "Patient inconnu"
+    )
+  }
+>
+  Détails
+</Button>
 
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={filteredAppointments.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </TableContainer>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={filteredAppointments.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </TableContainer>
+        )}
 
         {showAppointmentModal && (
           <AppointmentFormModal

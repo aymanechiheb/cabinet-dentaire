@@ -1,0 +1,24 @@
+services:
+  billings_db:
+    image: mysql:8
+    container_name: billings_db
+    environment:
+      MYSQL_ROOT_PASSWORD: choaib123
+      MYSQL_DATABASE: billings_db
+    ports:
+      - "3310:3306"
+    volumes:
+      - billings_db_data:/var/lib/mysql
+    networks:
+      - db-network
+
+networks:
+  kafka-network:
+    driver: bridge
+  db-network:
+    driver: bridge
+
+volumes:
+  #  patients_db_data:
+  #  users_db_data:
+  billings_db_data:

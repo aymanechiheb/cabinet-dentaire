@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/BackEnd/Appointment/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/BackEnd/Billing/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/BackEnd/Eureka/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/BackEnd/SpringSecurity/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/BackEnd/api-gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/BackEnd/m-parametrage/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/BackEnd/m-patient/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/BackEnd/m-resources/src/main/java" charset="UTF-8" />
+  </component>
+</project>

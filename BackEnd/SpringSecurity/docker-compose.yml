@@ -1,0 +1,87 @@
+services:
+#  zookeeper:
+#    image: confluentinc/cp-zookeeper:7.4.0
+#    environment:
+#      ZOOKEEPER_CLIENT_PORT: 2181
+#    ports:
+#      - "2181:2181"
+#    networks:
+#      - kafka-network
+#
+#  kafka:
+#    image: confluentinc/cp-kafka:7.4.0
+#    depends_on:
+#      - zookeeper
+#    ports:
+#      - "9092:9092"
+#    environment:
+#      KAFKA_BROKER_ID: 1
+#      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+#    networks:
+#      - kafka-network
+#
+#  kafka-ui:
+#    image: provectuslabs/kafka-ui:latest
+#    container_name: kafka-ui
+#    depends_on:
+#      - kafka
+#    ports:
+#      - "8088:8080"
+#    environment:
+#      KAFKA_CLUSTERS_0_NAME: local
+#      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+#      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+#    networks:
+#      - kafka-network
+
+#  patients_db:
+#    image: mysql:8
+#    container_name: patients_db
+#    environment:
+#      MYSQL_ROOT_PASSWORD: choaib123
+#      MYSQL_DATABASE: patients_db
+#    ports:
+#      - "3307:3306"
+#    volumes:
+#      - patients_db_data:/var/lib/mysql
+#    networks:
+#      - db-network
+
+  users_db:
+    image: mysql:8
+    container_name: users_db
+    environment:
+      MYSQL_ROOT_PASSWORD: chouaib123
+      MYSQL_DATABASE: users_db
+    ports:
+      - "3302:3306"
+    volumes:
+      - users_db_data:/var/lib/mysql
+    networks:
+      - db-network
+
+#  appointments_db:
+#    image: mysql:8
+#    container_name: appointments_db
+#    environment:
+#      MYSQL_ROOT_PASSWORD: choaib123
+#      MYSQL_DATABASE: appointments_db
+#    ports:
+#      - "3309:3306"
+#    volumes:
+#      - appointments_db_data:/var/lib/mysql
+#    networks:
+#      - db-network
+
+networks:
+  kafka-network:
+    driver: bridge
+  db-network:
+    driver: bridge
+
+volumes:
+#  patients_db_data:
+  users_db_data:
+#  appointments_db_data:

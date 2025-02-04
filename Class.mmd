@@ -1,0 +1,121 @@
+classDiagram
+    class User {
+        +int id
+        +String name
+        +String lastname
+        +String username
+        +String password
+        +String phone
+        +boolean active
+        +Role role
+    }
+
+    class Patient {
+        +Long id
+        +String fullname
+        +Date datenaissance
+        +String adresse
+        +String cin
+        +String telephone
+        +String email
+        +String etatCivil
+        +Integer nombreEnfants
+        +String cnss
+        +List~Document~ documents
+    }
+
+    class Document {
+        +long id
+        +String fichier
+        +Patient patient
+    }
+
+    class Machine {
+        +Long id
+        +String nom
+        +String model
+        +LocalDate datedachat
+        +LocalDate datedernierrevesion
+        +String etat
+        +String numerodeserie
+        +SalleConsultation salleConsultation
+    }
+
+    class SalleConsultation {
+        +Long id
+        +String numero
+        +boolean disponibilite
+        +List~Machine~ machines
+    }
+
+    class Produit {
+        +Long id
+        +String nom
+        +Integer quantite
+        +String fournisseur
+        +Double prixUnitaire
+        +LocalDate datePeremption
+    }
+
+    class Dent {
+        +Long id
+        +String Position
+        +String code
+    }
+
+    class Soin {
+        +Long id
+        +String code
+        +String description
+        +double prix
+    }
+
+    class Appointment {
+        +Long id
+        +LocalDateTime startDateTime
+        +String status
+        +String motif
+        +String notes
+        +List~PCare~ cares
+        +List~CProduct~ cProducts
+    }
+
+    class PCare {
+        +Long id
+        +LocalDateTime dateTime
+        +String comment
+        +Soin soin
+        +Facture facture
+        +Appointment appointment
+    }
+
+    class CProduct {
+        +Long id
+        +Produit produit
+        +Appointment appointment
+        +Long Qte
+    }
+
+    class Facture {
+        +Long id
+        +LocalDateTime date
+        +Long amount
+        +String status
+        +String paymentMethod
+        +LocalDateTime dueDate
+        +String numFacture
+        +Patient patient
+        +User user
+    }
+
+    User "1" -- "*" Appointment : creates
+    Patient "1" -- "*" Appointment : has
+    Patient "1" -- "*" Document : has
+    SalleConsultation "1" -- "*" Machine : contains
+    Appointment "1" -- "*" PCare : has
+    Appointment "1" -- "*" CProduct : has
+    PCare "1" -- "1" Soin : refers to
+    CProduct "1" -- "1" Produit : refers to
+    PCare "1" -- "1" Facture : refers to
+    Facture "1" -- "1" Patient : belongs to
+    Facture "1" -- "1" User : belongs to

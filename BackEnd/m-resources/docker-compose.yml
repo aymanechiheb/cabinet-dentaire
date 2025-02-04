@@ -1,0 +1,26 @@
+services:
+
+
+  resources_db:
+    image: mysql:8
+    container_name: resources_db
+    environment:
+      MYSQL_ROOT_PASSWORD: choaib123
+      MYSQL_DATABASE: resources_db
+    ports:
+      - "3311:3306"
+    volumes:
+      - resources_db_data:/var/lib/mysql
+    networks:
+      - db-network
+
+
+
+networks:
+  kafka-network:
+    driver: bridge
+  db-network:
+    driver: bridge
+
+volumes:
+  resources_db_data:
